@@ -29,7 +29,85 @@ This project demonstrates the use of Terraform modules, provisioners, and worksp
 │       ├── outputs.tf
 └── README.md
 ```
+# Deployment Steps
 
+## 1. Clone the Repository
+
+Clone the GitHub repository to your local machine:
+
+```bash
+git clone https://github.com/your-username/your-repo.git
+cd your-repo
+```
+
+## 2. Configure AWS Credentials
+`aws configure`
+
+You will be prompted to enter your AWS Access Key ID, Secret Access Key, region, and output format.
+
+## 3. Review and Update Variables
+Edit the **terraform.tfvars** file to specify your AWS configuration:
+
+```
+ami_id          = "ami-xxxxxxxx"  # Replace with your desired AMI ID
+instance_type   = "t2.micro"      # EC2 instance type
+key_name         = "nency-unique-key"  # Name of your SSH key pair
+bucket_name      = "nency1-s3-bucket"  # S3 bucket name
+```
+## 4. Initialize Terraform
+Initialize the Terraform configuration:
+
+`terraform init`
+
+This command initializes the Terraform working directory and downloads necessary plugins.
+
+## 5. Create and Select Workspaces
+Create and select the dev and prod workspaces:
+```
+terraform workspace new dev
+terraform workspace new prod
+```
+
+Select the workspace you want to work in:
+
+`terraform workspace select dev  `
+
+## 6. Apply Terraform Configuration
+Deploy the infrastructure in the selected workspace:
+
+`terraform apply -var-file=terraform.tfvars`
+
+## 7. Verify Deployment
+After the deployment completes:
+
+EC2 Instance: Access the EC2 instance's public IP in a web browser to verify that Apache HTTP Server is running.
+S3 Bucket: Check the S3 bucket creation and ensure it's listed in the AWS S3 console.
+
+
+## 8. Check Apache Status
+SSH into the EC2 instance and check the Apache status:
+
+`ssh -i ~/.ssh/nency_key_pair ec2-user@<EC2_PUBLIC_IP>`
+
+Once logged in, check Apache status:
+
+`sudo systemctl status httpd`
+
+## 9. Cleanup Resources
+To destroy the resources in the current workspace:
+
+`terraform destroy`
+
+Confirm the destruction when prompted. Repeat this for each workspace (dev and prod):
+
+```
+terraform workspace select prod
+terraform destroy
+```
+
+## License
+
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT). See the [LICENSE](LICENSE) file for details.
 
 
 ## Output:
